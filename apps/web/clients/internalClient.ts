@@ -4,8 +4,21 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 const registerUser = async (input: PlatformUserCreateInput): Promise<Pick<PlatformUser, "id"> | undefined | null> => {
-  // ToDo: Implement the registerUser function
-  return null
+  try {
+    // Send a POST request to our new custom backend route
+    const response = await axios.post('http://localhost:3001/register', {
+      email: input.email,
+      password: input.password,
+    });
+
+    // Our backend returns { message: "...", user: { id: ..., email: ... } }
+    // We return the user object so the frontend knows it succeeded
+    return response.data.user;
+  } catch (error) {
+    console.error('Error registering user via internal client:', error);
+    // You can throw the error to let the UI catch it, or return null
+    throw error; 
+  }
 };
 
 const loginUser = async (input: PlatformUserCreateInput) => {
